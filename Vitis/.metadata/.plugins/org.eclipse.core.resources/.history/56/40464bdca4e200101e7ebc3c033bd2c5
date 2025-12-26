@@ -1,0 +1,97 @@
+/*
+ * Dual UDP Server for lwIP + FreeRTOS
+ * Ports: 5001 and 5002
+ */
+
+#include "udp_perf_server.h"
+#include "lwip/sockets.h"
+#include "lwip/inet.h"
+#include "xil_printf.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include <string.h>
+
+#define UDP_BUF_SIZE 1500
+
+struct udp_server_ctx {
+    int port;
+    uint64_t total_bytes;
+};
+
+/* ------------------------------------------------------------ */
+
+static void udp_server_task(void *arg)
+{
+    struct udp_server_ctx *ctx = (struct udp_server_ctx *)arg;
+    int sock;
+    struct sockaddr_in addr, from;
+    socklen_t fromlen = sizeof(from);
+    char buffer[UDP_BUF_SIZE];
+    int len;
+
+    sock = lwip_socket(AF_INET, SOCK_DGRAM, 0);
+    if (sock < 0) {
+        xil_printf("UDP %d: socket error\r\n", ctx->port);
+        vTaskDelete(NULL);
+    }
+
+    memset(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(ctx->port);
+    addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+    if (lwip_bind(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+        xil_printf("UDP %d: bind failed\r\n", ctx->port);
+        lwip_close(sock);
+        vTaskDelete(NULL);
+    }
+
+    xil_printf("UDP server listening on port %d\r\n", ctx->port);
+
+    while (1) {
+        len = lwip_recvfrom(sock, buffer, UDP_BUF_SIZE, 0,
+                            (struct sockaddr *)&from, &fromlen);
+        if (len > 0) {
+            ctx->total_bytes += len;
+            /* hier kun je later HDMI-logica aan koppelen */
+        }
+    }
+}
+
+/* ------------------------------------------------------------ */
+
+void print_app_header(void)
+{
+    xil_printf("Dual UDP Server Application\r\n");
+    xil_printf("Listening on ports 5001 and 5002\r\n");
+    xil_printf("Use:\r\n");
+    xil_printf("iperf -c <board_ip> -u -b 0 -p 5001\r\n");
+    xil_printf("iperf -c <board_ip> -u -b 0 -p 5002\r\n\r\n");
+}
+
+/* ------------------------------------------------------------ */
+
+static struct udp_server_ctx udp1 = {
+    .port = 5001,
+    .total_bytes = 0
+};
+
+static struct udp_server_ctx udp2 = {
+    .port = 5002,
+    .total_bytes = 0
+};
+
+void start_application(void)
+{
+    sys_thread_new("udp_5001",
+                   udp_server_task,
+                   &udp1,
+                   TCPIP_THREAD_STACKSIZE,
+                   DEFAULT_THREAD_PRIO);
+
+    sys_thread_new("udp_5002",
+                   udp_server_task,
+                   &udp2,
+                   TCPIP_THREAD_STACKSIZE,
+                   DEFAULT_THREAD_PRIO);
+}

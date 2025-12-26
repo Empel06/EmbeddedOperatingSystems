@@ -1,0 +1,411 @@
+/*
+ * Copyright (C) 2017 - 2022 Xilinx, Inc.
+ * Copyright (C) 2022 - 2023 Advanced Micro Devices, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+ * OF SUCH DAMAGE.
+ *
+ */
+
+#include "udp_perf_server.h"
+#include <sleep.h>
+#include "xparameters.h"
+#include "netif/xadapter.h"
+#include "platform_config.h"
+#include "lwip/init.h"
+#include "lwip/inet.h"
+#include "lwip/sockets.h"
+#include <string.h>
+
+#if LWIP_DHCP==1
+#include "lwip/dhcp.h"
+extern volatile int dhcp_timoutcntr;
+#endif
+
+#ifdef XPS_BOARD_ZCU102
+#if defined(XPAR_XIICPS_0_DEVICE_ID) || defined(XPAR_XIICPS_0_BASEADDR)
+int IicPhyReset(void);
+#endif
+#endif
+
+static int complete_nw_thread;
+
+#define THREAD_STACKSIZE 1024
+#define REPORT_INTERVAL_TIME (INTERIM_REPORT_INTERVAL * 1000)
+
+#define DEFAULT_IP_ADDRESS "192.168.1.10"
+#define DEFAULT_IP_MASK "255.255.255.0"
+#define DEFAULT_GW_ADDRESS "192.168.1.1"
+
+struct netif server_netif;
+static struct perf_stats server;
+
+/* ========== NETWORK INITIALIZATION ========== */
+
+static void print_ip(char *msg, ip_addr_t *ip)
+{
+	xil_printf(msg);
+	xil_printf("%d.%d.%d.%d\n\r", ip4_addr1(ip), ip4_addr2(ip),
+				ip4_addr3(ip), ip4_addr4(ip));
+}
+
+static void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw)
+{
+	print_ip("Board IP:       ", ip);
+	print_ip("Netmask :       ", mask);
+	print_ip("Gateway :       ", gw);
+}
+
+static void assign_default_ip(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw)
+{
+	int err;
+
+	xil_printf("Configuring default IP %s \r\n", DEFAULT_IP_ADDRESS);
+
+	err = inet_aton(DEFAULT_IP_ADDRESS, ip);
+	if(!err)
+		xil_printf("Invalid default IP address: %d\r\n", err);
+
+	err = inet_aton(DEFAULT_IP_MASK, mask);
+	if(!err)
+		xil_printf("Invalid default IP MASK: %d\r\n", err);
+
+	err = inet_aton(DEFAULT_GW_ADDRESS, gw);
+	if(!err)
+		xil_printf("Invalid default gateway address: %d\r\n", err);
+}
+
+void network_thread(void *p)
+{
+#if LWIP_DHCP==1
+	int mscnt = 0;
+#endif
+	u8_t mac_ethernet_address[] = { 0x00, 0x0a, 0x35, 0x00, 0x01, 0x02 };
+
+	if (!xemac_add(&server_netif, NULL, NULL, NULL, mac_ethernet_address,
+		PLATFORM_EMAC_BASEADDR)) {
+		xil_printf("Error adding N/W interface\r\n");
+		return;
+	}
+
+	netif_set_default(&server_netif);
+	netif_set_up(&server_netif);
+
+	sys_thread_new("xemacif_input_thread",
+			(void(*)(void*))xemacif_input_thread, &server_netif,
+			THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
+
+	complete_nw_thread = 1;
+
+#if LWIP_DHCP==1
+	dhcp_start(&server_netif);
+	while (1) {
+		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
+		dhcp_fine_tmr();
+		mscnt += DHCP_FINE_TIMER_MSECS;
+		if (mscnt >= DHCP_COARSE_TIMER_SECS*1000) {
+			dhcp_coarse_tmr();
+			mscnt = 0;
+		}
+	}
+#else
+	vTaskDelete(NULL);
+#endif
+}
+
+/* ========== UDP SERVER IMPLEMENTATION ========== */
+
+void print_app_header(void)
+{
+	xil_printf("UDP server listening on port %d\r\n", UDP_CONN_PORT);
+	xil_printf("On Host: Run $iperf -c %s -i %d -t 300 -u -b <bandwidth>\r\n",
+			inet_ntoa(server_netif.ip_addr),
+			INTERIM_REPORT_INTERVAL);
+}
+
+static void print_udp_conn_stats(struct sockaddr_in from)
+{
+	xil_printf("[%3d] local %s port %d connected with ",
+			server.client_id, inet_ntoa(server_netif.ip_addr),
+			UDP_CONN_PORT);
+	xil_printf("%s port %d\r\n", inet_ntoa(from.sin_addr),
+			ntohs(from.sin_port));
+	xil_printf("[ ID] Interval\t     Transfer     Bandwidth\t");
+	xil_printf("    Lost/Total Datagrams\n\r");
+}
+
+static void stats_buffer(char* outString, double data, enum measure_t type)
+{
+	int conv = KCONV_UNIT;
+	const char *format;
+	double unit = 1024.0;
+
+	if (type == SPEED)
+		unit = 1000.0;
+
+	while (data >= unit && conv <= KCONV_GIGA) {
+		data /= unit;
+		conv++;
+	}
+
+	if (data < 9.995) {
+		format = "%4.2f %c";
+	} else if (data < 99.95) {
+		format = "%4.1f %c";
+	} else {
+		format = "%4.0f %c";
+	}
+	sprintf(outString, format, data, kLabel[conv]);
+}
+
+static void udp_conn_report(u64_t diff, enum report_type report_type)
+{
+	u64_t total_len, cnt_datagrams, cnt_dropped_datagrams, total_packets;
+	u32_t cnt_out_of_order_datagrams;
+	double duration, bandwidth = 0;
+	char data[16], perf[16], time[64], drop[64];
+
+	if (report_type == INTER_REPORT) {
+		total_len = server.i_report.total_bytes;
+		cnt_datagrams = server.i_report.cnt_datagrams;
+		cnt_dropped_datagrams = server.i_report.cnt_dropped_datagrams;
+	} else {
+		server.i_report.last_report_time = 0;
+		total_len = server.total_bytes;
+		cnt_datagrams = server.cnt_datagrams;
+		cnt_dropped_datagrams = server.cnt_dropped_datagrams;
+		cnt_out_of_order_datagrams = server.cnt_out_of_order_datagrams;
+	}
+
+	total_packets = cnt_datagrams + cnt_dropped_datagrams;
+	duration = diff / 1000.0;
+	if (duration)
+		bandwidth = (total_len / duration) * 8.0;
+
+	stats_buffer(data, total_len, BYTES);
+	stats_buffer(perf, bandwidth, SPEED);
+	sprintf(time, "%4.1f-%4.1f sec",
+			(double)server.i_report.last_report_time,
+			(double)(server.i_report.last_report_time + duration));
+	sprintf(drop, "%4llu/%5llu (%.2g%%)", cnt_dropped_datagrams,
+			total_packets,
+			(100.0 * cnt_dropped_datagrams)/total_packets);
+	xil_printf("[%3d] %s  %sBytes  %sbits/sec  %s\n\r", server.client_id,
+			time, data, perf, drop);
+
+	if (report_type == INTER_REPORT) {
+		server.i_report.last_report_time += duration;
+	} else if ((report_type != INTER_REPORT) && cnt_out_of_order_datagrams) {
+		xil_printf("[%3d] %s  %u datagrams received out-of-order\n\r",
+				server.client_id, time,
+				cnt_out_of_order_datagrams);
+	}
+}
+
+static void reset_stats(void)
+{
+	server.client_id++;
+	server.start_time = sys_now();
+	server.end_time = 0;
+	server.total_bytes = 0;
+	server.cnt_datagrams = 0;
+	server.cnt_dropped_datagrams = 0;
+	server.cnt_out_of_order_datagrams = 0;
+	server.expected_datagram_id = 0;
+
+	server.i_report.start_time = 0;
+	server.i_report.total_bytes = 0;
+	server.i_report.cnt_datagrams = 0;
+	server.i_report.cnt_dropped_datagrams = 0;
+	server.i_report.last_report_time = 0;
+}
+
+static void udp_recv_perf_traffic(int sock)
+{
+	u8_t first = 1;
+	u32_t drop_datagrams = 0;
+	s32_t recv_id;
+	int count;
+	static u64_t now;
+	char recv_buf[UDP_RECV_BUFSIZE];
+	struct sockaddr_in from;
+	socklen_t fromlen = sizeof(from);
+
+	while (1) {
+		if((count = lwip_recvfrom(sock, recv_buf, UDP_RECV_BUFSIZE, 0,
+				(struct sockaddr *)&from, &fromlen)) <= 0) {
+			continue;
+		}
+
+		recv_id = ntohl(*((int *)recv_buf));
+
+		if (first && (recv_id == 0)) {
+			reset_stats();
+			print_udp_conn_stats(from);
+			first = 0;
+		} else if (first) {
+			continue;
+		}
+
+		if (recv_id < 0) {
+			u64_t diff_ms = now - server.start_time;
+			if (sendto(sock, recv_buf, count, 0,
+				(struct sockaddr *)&from, fromlen) < 0) {
+				xil_printf("Error in write\n\r");
+			}
+
+			udp_conn_report(diff_ms, UDP_DONE_SERVER);
+			xil_printf("UDP test passed Successfully\n\r");
+			first = 1;
+			continue;
+		}
+
+		if (server.expected_datagram_id != recv_id) {
+			if (server.expected_datagram_id < recv_id) {
+				drop_datagrams = recv_id - server.expected_datagram_id;
+				server.cnt_dropped_datagrams += drop_datagrams;
+				server.i_report.cnt_dropped_datagrams += drop_datagrams;
+				server.expected_datagram_id = recv_id + 1;
+			} else if (server.expected_datagram_id > recv_id) {
+				server.cnt_out_of_order_datagrams++;
+			}
+		} else {
+			server.expected_datagram_id++;
+		}
+
+		server.cnt_datagrams++;
+		server.total_bytes += count;
+
+		if (REPORT_INTERVAL_TIME) {
+			now = sys_now();
+
+			server.i_report.cnt_datagrams++;
+			server.i_report.total_bytes += count;
+
+			if (server.i_report.start_time) {
+				u64_t diff_ms = now - server.i_report.start_time;
+
+				if (diff_ms >= REPORT_INTERVAL_TIME) {
+					udp_conn_report(diff_ms, INTER_REPORT);
+					server.i_report.start_time = 0;
+					server.i_report.total_bytes = 0;
+					server.i_report.cnt_datagrams = 0;
+					server.i_report.cnt_dropped_datagrams = 0;
+				}
+			} else {
+				server.i_report.start_time = now;
+			}
+		}
+	}
+}
+
+void start_application(void)
+{
+	err_t err;
+	int sock;
+	struct sockaddr_in addr;
+
+	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+		xil_printf("UDP server: Error creating Socket\r\n");
+		return;
+	}
+
+	memset(&addr, 0, sizeof(struct sockaddr_in));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(UDP_CONN_PORT);
+	addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+	err = bind(sock, (struct sockaddr *)&addr, sizeof(addr));
+	if (err != ERR_OK) {
+		xil_printf("UDP server: Error on bind: %d\r\n", err);
+		close(sock);
+		return;
+	}
+
+	udp_recv_perf_traffic(sock);
+}
+
+/* ========== MAIN APPLICATION ========== */
+
+int main_thread()
+{
+#if LWIP_DHCP==1
+	int mscnt = 0;
+#endif
+
+#ifdef XPS_BOARD_ZCU102
+	IicPhyReset();
+#endif
+	xil_printf("\n\r\n\r");
+	xil_printf("-----lwIP Socket Mode UDP Server Application------\r\n");
+
+	lwip_init();
+
+	sys_thread_new("nw_thread", network_thread, NULL,
+			THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
+
+	while(!complete_nw_thread)
+		usleep(50);
+
+#if LWIP_DHCP==1
+	while (1) {
+		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
+		if (server_netif.ip_addr.addr) {
+			xil_printf("DHCP request success\r\n");
+			break;
+		}
+		mscnt += DHCP_FINE_TIMER_MSECS;
+		if (mscnt >= 10000) {
+			xil_printf("ERROR: DHCP request timed out\r\n");
+			assign_default_ip(&(server_netif.ip_addr),
+						&(server_netif.netmask),
+						&(server_netif.gw));
+			break;
+		}
+	}
+#else
+	assign_default_ip(&(server_netif.ip_addr), &(server_netif.netmask),
+				&(server_netif.gw));
+#endif
+
+	print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask),
+				&(server_netif.gw));
+	xil_printf("\r\n");
+
+	print_app_header();
+	xil_printf("\r\n");
+
+	start_application();
+
+	vTaskDelete(NULL);
+	return 0;
+}
+
+int main()
+{
+	sys_thread_new("main_thread", (void(*)(void*))main_thread, 0,
+			THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
+	vTaskStartScheduler();
+	while(1);
+	return 0;
+}
