@@ -11,6 +11,7 @@
 #include "task.h"
 #include <string.h>
 #include "lwipopts.h"
+#include "game_state.h"
 
 
 #define UDP_BUF_SIZE 1500
@@ -54,9 +55,26 @@ static void udp_server_task(void *arg)
         len = lwip_recvfrom(sock, buffer, UDP_BUF_SIZE, 0,
                             (struct sockaddr *)&from, &fromlen);
         if (len > 0) {
-            ctx->total_bytes += len;
-            /* hier kun je later HDMI-logica aan koppelen */
+
+            /* Simpele besturing:
+             * 'u' = omhoog
+             * 'd' = omlaag
+             */
+            if (buffer[0] == 'u') {
+                paddle_y -= 10;
+            }
+            else if (buffer[0] == 'd') {
+                paddle_y += 10;
+            }
+
+            /* Grenzen bewaken */
+            if (paddle_y < 0)
+                paddle_y = 0;
+
+            if (paddle_y > (SCREEN_HEIGHT - PADDLE_HEIGHT))
+                paddle_y = SCREEN_HEIGHT - PADDLE_HEIGHT;
         }
+
     }
 }
 

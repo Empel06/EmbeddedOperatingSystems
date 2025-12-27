@@ -1,25 +1,35 @@
-22:50:24 **** Incremental Build of configuration Release for project Pong ****
+20:03:14 **** Incremental Build of configuration Release for project Pong ****
 make all 
 make --no-print-directory pre-build
 a9-linaro-pre-build-step
 ' '
 make --no-print-directory main-build
-'Building file: ../src/udp_perf_server.c'
+'Building file: ../src/main.c'
 'Invoking: ARM v7 gcc compiler'
-arm-none-eabi-gcc -Wall -O2 -c -fmessage-length=0 -MT"src/udp_perf_server.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -IC:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/sw/hdmi_vdma/freertos10_xilinx_ps7_cortexa9_0/bspinclude/include -MMD -MP -MF"src/udp_perf_server.d" -MT"src/udp_perf_server.o" -o "src/udp_perf_server.o" "../src/udp_perf_server.c"
-'Finished building: ../src/udp_perf_server.c'
+arm-none-eabi-gcc -Wall -O2 -c -fmessage-length=0 -MT"src/main.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -IC:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/sw/hdmi_vdma/freertos10_xilinx_ps7_cortexa9_0/bspinclude/include -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.c"
+'Finished building: ../src/main.c'
+' '
+'Building file: ../src/render_task.c'
+'Invoking: ARM v7 gcc compiler'
+arm-none-eabi-gcc -Wall -O2 -c -fmessage-length=0 -MT"src/render_task.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -IC:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/sw/hdmi_vdma/freertos10_xilinx_ps7_cortexa9_0/bspinclude/include -MMD -MP -MF"src/render_task.d" -MT"src/render_task.o" -o "src/render_task.o" "../src/render_task.c"
+'Finished building: ../src/render_task.c'
+' '
+'Building file: ../src/video_init.c'
+'Invoking: ARM v7 gcc compiler'
+arm-none-eabi-gcc -Wall -O2 -c -fmessage-length=0 -MT"src/video_init.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -IC:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/sw/hdmi_vdma/freertos10_xilinx_ps7_cortexa9_0/bspinclude/include -MMD -MP -MF"src/video_init.d" -MT"src/video_init.o" -o "src/video_init.o" "../src/video_init.c"
+'Finished building: ../src/video_init.c'
 ' '
 'Building target: Pong.elf'
 'Invoking: ARM v7 gcc linker'
-arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -LC:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/sw/hdmi_vdma/freertos10_xilinx_ps7_cortexa9_0/bsplib/lib -o "Pong.elf"  ./src/iic_phyreset.o ./src/main.o ./src/udp_perf_server.o   -Wl,--start-group,-lxil,-lfreertos,-lgcc,-lc,--end-group -Wl,--start-group,-lxil,-llwip4,-lgcc,-lc,--end-group
+arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -LC:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/sw/hdmi_vdma/freertos10_xilinx_ps7_cortexa9_0/bsplib/lib -o "Pong.elf"  ./src/game_state.o ./src/iic_phyreset.o ./src/main.o ./src/render_task.o ./src/udp_perf_server.o ./src/video_init.o   -Wl,--start-group,-lxil,-lfreertos,-lgcc,-lc,--end-group -Wl,--start-group,-lxil,-llwip4,-lgcc,-lc,--end-group
 'Finished building target: Pong.elf'
 ' '
 'Invoking: ARM v7 Print Size'
 arm-none-eabi-size Pong.elf  |tee "Pong.elf.size"
    text	   data	    bss	    dec	    hex	filename
- 187577	   3444	41023552	41214573	274e26d	Pong.elf
+ 188089	   3444	41023552	41215085	274e46d	Pong.elf
 'Finished building: Pong.elf.size'
 ' '
 
-22:50:27 Build Finished (took 2s.349ms)
+20:03:17 Build Finished (took 2s.874ms)
 

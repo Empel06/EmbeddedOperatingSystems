@@ -34,12 +34,18 @@
 #include "xil_printf.h"
 #include "lwip/init.h"
 #include "lwip/inet.h"
+#include "game_state.h"
+
+void vdma_init(void);
+void framebuffer_init(void);
 
 #if LWIP_DHCP==1
 #include "lwip/dhcp.h"
 extern volatile int dhcp_timoutcntr;
 err_t dhcp_start(struct netif *netif);
 #endif
+
+extern void render_task(void *arg);
 
 #ifdef XPS_BOARD_ZCU102
 #if defined(XPAR_XIICPS_0_DEVICE_ID) || defined(XPAR_XIICPS_0_BASEADDR)
@@ -189,18 +195,41 @@ int main_thread()
 	print_app_header();
 	xil_printf("\r\n");
 
-	/* start the application*/
+	/* start UDP application */
 	start_application();
 
+	/* initialize game state */
+	game_state_init();
+
+	/* start render task */
+	sys_thread_new("render_task",
+	               render_task,
+	               NULL,
+	               2048,
+	               DEFAULT_THREAD_PRIO);
+
+	/* main_thread is no longer needed */
 	vTaskDelete(NULL);
 	return 0;
+
 }
 
 int main()
 {
-	sys_thread_new("main_thread", (void(*)(void*))main_thread, 0,
-			THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
-	vTaskStartScheduler();
-	while(1);
-	return 0;
+    /* HDMI / VDMA init FIRST */
+    vdma_init();
+    framebuffer_init();
+
+    /* Start FreeRTOS */
+    sys_thread_new("main_thread",
+                   (void(*)(void*))main_thread,
+                   0,
+                   THREAD_STACKSIZE,
+                   DEFAULT_THREAD_PRIO);
+
+    vTaskStartScheduler();
+
+    while (1);
+    return 0;
 }
+
