@@ -1,0 +1,55 @@
+#include "game_state.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "xil_io.h"
+#include "xil_cache.h"
+#include <string.h>
+
+#define FRAME_BUFFER_1 0x10000000
+#define BYTES_PER_PIXEL 3
+
+static uint8_t *framebuffer = (uint8_t *)FRAME_BUFFER_1;
+
+/* Pixel tekenen */
+static inline void draw_pixel(int x, int y, uint8_t r, uint8_t g, uint8_t b)
+{
+    uint32_t offset = (y * SCREEN_WIDTH + x) * BYTES_PER_PIXEL;
+    framebuffer[offset + 0] = r;
+    framebuffer[offset + 1] = g;
+    framebuffer[offset + 2] = b;
+}
+
+static void clear_screen(void)
+{
+    memset(framebuffer, 0x00, SCREEN_WIDTH * SCREEN_HEIGHT * BYTES_PER_PIXEL);
+}
+
+static void draw_paddle(void)
+{
+    for (int y = 0; y < PADDLE_HEIGHT; y++) {
+        for (int x = 0; x < PADDLE_WIDTH; x++) {
+            draw_pixel(x + 50, paddle_y + y, 255, 255, 255);
+        }
+    }
+}
+
+void render_task(void *arg)
+{
+    (void)arg;
+
+    uint8_t *fb = (uint8_t *)FRAME_BUFFER_1;
+
+    while (1) {
+        for (int y = 0; y < SCREEN_HEIGHT; y++) {
+            for (int x = 0; x < SCREEN_WIDTH; x++) {
+                int o = (y * SCREEN_WIDTH + x) * 3;
+                fb[o + 0] = 255;   // R
+                fb[o + 1] = 0;     // G
+                fb[o + 2] = 0;     // B
+            }
+        }
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+}
+
+

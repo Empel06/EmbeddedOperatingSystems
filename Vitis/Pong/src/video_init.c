@@ -36,12 +36,19 @@ void vdma_init(void)
 
 void framebuffer_init(void)
 {
-    xil_printf("Clearing framebuffer...\r\n");
-
     Xil_DCacheDisable();
 
-    uint8_t *fb = (uint8_t *)FRAME_BUFFER_1;
-    memset(fb, 0x00, SCREEN_WIDTH * SCREEN_HEIGHT * 3);
+    uint8_t *buffers[] = {
+        (uint8_t *)FRAME_BUFFER_1,
+        (uint8_t *)FRAME_BUFFER_2,
+        (uint8_t *)FRAME_BUFFER_3
+    };
+
+    for (int i = 0; i < 3; i++) {
+        memset(buffers[i], 0x00,
+               SCREEN_WIDTH * SCREEN_HEIGHT * 3);
+    }
 
     Xil_DCacheEnable();
 }
+

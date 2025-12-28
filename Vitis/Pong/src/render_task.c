@@ -13,7 +13,6 @@ static uint8_t *framebuffer = (uint8_t *)FRAME_BUFFER_1;
 /* Pixel tekenen */
 static inline void draw_pixel(int x, int y, uint8_t r, uint8_t g, uint8_t b)
 {
-	xil_printf("Render task started\r\n");
     uint32_t offset = (y * SCREEN_WIDTH + x) * BYTES_PER_PIXEL;
     framebuffer[offset + 0] = r;
     framebuffer[offset + 1] = g;
