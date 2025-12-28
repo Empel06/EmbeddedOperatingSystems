@@ -45,5 +45,18 @@ void render_task(void *arg)
                              SCREEN_WIDTH * SCREEN_HEIGHT * BYTES_PER_PIXEL);
 
         vTaskDelay(pdMS_TO_TICKS(16)); // ~60 FPS
+        static int dir = 1;
+
+        paddle_y += dir * 5;
+
+        if (paddle_y < 0) {
+            paddle_y = 0;
+            dir = 1;
+        }
+        if (paddle_y > (SCREEN_HEIGHT - PADDLE_HEIGHT)) {
+            paddle_y = SCREEN_HEIGHT - PADDLE_HEIGHT;
+            dir = -1;
+        }
+
     }
 }
