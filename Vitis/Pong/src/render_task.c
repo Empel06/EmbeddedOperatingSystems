@@ -24,14 +24,24 @@ static void clear_screen(void)
     memset(framebuffer, 0x00, SCREEN_WIDTH * SCREEN_HEIGHT * BYTES_PER_PIXEL);
 }
 
-static void draw_paddle(void)
+static void draw_paddle(int x, int y)
 {
-    for (int y = 0; y < PADDLE_HEIGHT; y++) {
-        for (int x = 0; x < PADDLE_WIDTH; x++) {
-            draw_pixel(x + 50, paddle_y + y, 255, 255, 255);
+    for (int dy = 0; dy < PADDLE_HEIGHT; dy++) {
+        for (int dx = 0; dx < PADDLE_WIDTH; dx++) {
+            draw_pixel(x + dx, y + dy, 255, 255, 255);
         }
     }
 }
+
+static void draw_ball(void)
+{
+    for (int y = 0; y < BALL_SIZE; y++) {
+        for (int x = 0; x < BALL_SIZE; x++) {
+            draw_pixel(ball_x + x, ball_y + y, 255, 255, 255);
+        }
+    }
+}
+
 
 void render_task(void *arg)
 {
@@ -39,11 +49,22 @@ void render_task(void *arg)
 
     while (1) {
         clear_screen();
-        draw_paddle();
 
-        Xil_DCacheFlushRange((UINTPTR)framebuffer,
-                             SCREEN_WIDTH * SCREEN_HEIGHT * BYTES_PER_PIXEL);
+        /* Always draw paddles */
+        draw_paddle(50, paddle1_y);
+        draw_paddle(SCREEN_WIDTH - 50 - PADDLE_WIDTH, paddle2_y);
 
-        vTaskDelay(pdMS_TO_TICKS(16)); // ~60 FPS
+        /* Ball only if both players connected */
+        if (player1_connected && player2_connected) {
+            draw_ball();
+        }
+
+        Xil_DCacheFlushRange(
+            (UINTPTR)framebuffer,
+            SCREEN_WIDTH * SCREEN_HEIGHT * BYTES_PER_PIXEL
+        );
+
+        vTaskDelay(pdMS_TO_TICKS(16));
     }
 }
+

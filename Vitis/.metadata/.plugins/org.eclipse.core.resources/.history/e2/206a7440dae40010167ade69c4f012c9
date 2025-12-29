@@ -1,0 +1,27 @@
+#include "game_state.h"
+
+/* Paddles */
+volatile int paddle1_y;
+volatile int paddle2_y;
+
+/* Ball */
+volatile int ball_x;
+volatile int ball_y;
+volatile int ball_vx;
+volatile int ball_vy;
+
+/* Connection flags */
+volatile int player1_connected = 0;
+volatile int player2_connected = 0;
+
+void game_state_init(void)
+{
+    paddle1_y = (SCREEN_HEIGHT - PADDLE_HEIGHT) / 2;
+    paddle2_y = (SCREEN_HEIGHT - PADDLE_HEIGHT) / 2;
+
+    ball_x = SCREEN_WIDTH / 2;
+    ball_y = SCREEN_HEIGHT / 2;
+
+    ball_vx = BALL_SPEED_X;
+    ball_vy = BALL_SPEED_Y;
+}

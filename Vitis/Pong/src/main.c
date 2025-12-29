@@ -45,6 +45,7 @@ extern volatile int dhcp_timoutcntr;
 err_t dhcp_start(struct netif *netif);
 #endif
 
+extern void game_task(void *arg);
 extern void render_task(void *arg);
 
 #ifdef XPS_BOARD_ZCU102
@@ -200,6 +201,13 @@ int main_thread()
 
 	/* initialize game state */
 	game_state_init();
+
+	/* start game logic task */
+	sys_thread_new("game_task",
+	               game_task,
+	               NULL,
+	               1024,
+	               DEFAULT_THREAD_PRIO);
 
 	/* start render task */
 	sys_thread_new("render_task",

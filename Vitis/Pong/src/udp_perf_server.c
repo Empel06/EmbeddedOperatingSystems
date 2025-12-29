@@ -56,25 +56,30 @@ static void udp_server_task(void *arg)
                             (struct sockaddr *)&from, &fromlen);
         if (len > 0) {
 
-            /* Simpele besturing:
-             * 'u' = omhoog
-             * 'd' = omlaag
-             */
+            /* Markeer speler als verbonden */
+            if (ctx->port == 5001)
+                player1_connected = 1;
+            else if (ctx->port == 5002)
+                player2_connected = 1;
+
+            /* Paddle selecteren */
+            volatile int *paddle =
+                (ctx->port == 5001) ? &paddle1_y : &paddle2_y;
+
             if (buffer[0] == 'u') {
-                paddle_y -= 10;
+                *paddle -= 10;
             }
             else if (buffer[0] == 'd') {
-                paddle_y += 10;
+                *paddle += 10;
             }
 
-            /* Grenzen bewaken */
-            if (paddle_y < 0)
-                paddle_y = 0;
+            /* Grenzen */
+            if (*paddle < 0)
+                *paddle = 0;
 
-            if (paddle_y > (SCREEN_HEIGHT - PADDLE_HEIGHT))
-                paddle_y = SCREEN_HEIGHT - PADDLE_HEIGHT;
+            if (*paddle > (SCREEN_HEIGHT - PADDLE_HEIGHT))
+                *paddle = SCREEN_HEIGHT - PADDLE_HEIGHT;
         }
-
     }
 }
 
