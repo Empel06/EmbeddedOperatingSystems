@@ -1,0 +1,132 @@
+#include "game_state.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "xil_io.h"
+#include "xil_cache.h"
+#include "xil_exception.h"
+#include "xscugic.h"
+#include "xaxivdma.h"
+#include <string.h>
+
+#define FRAME_BUFFER_1 0x10000000
+#define FRAME_BUFFER_2 0x118C0000
+#define FRAME_BUFFER_3 0x13180000
+#define BYTES_PER_PIXEL 3
+#define NUM_BUFFERS 3
+
+static uint8_t *framebuffers[NUM_BUFFERS] = {
+    (uint8_t *)FRAME_BUFFER_1,
+    (uint8_t *)FRAME_BUFFER_2,
+    (uint8_t *)FRAME_BUFFER_3
+};
+
+static int draw_buf = 0;     // buffer waarin we tekenen
+static int display_buf = 0;  // buffer die VDMA uitleest
+
+volatile int frame_done = 0;  // VDMA frame done flag
+
+extern XAxiVdma vdma;  // VDMA instance
+extern XScuGic intc;   // Interrupt controller
+
+/* VDMA frame done ISR */
+void vdma_frame_done_isr(void *CallbackRef)
+{
+    frame_done = 1;
+}
+
+/* ===== Pixel en shapes ===== */
+static inline void draw_pixel(int x, int y, uint8_t r, uint8_t g, uint8_t b)
+{
+    uint32_t offset = (y * SCREEN_WIDTH + x) * BYTES_PER_PIXEL;
+    framebuffers[draw_buf][offset + 0] = r;
+    framebuffers[draw_buf][offset + 1] = g;
+    framebuffers[draw_buf][offset + 2] = b;
+}
+
+static void clear_screen(void)
+{
+    memset(framebuffers[draw_buf], 0x00,
+           SCREEN_WIDTH * SCREEN_HEIGHT * BYTES_PER_PIXEL);
+}
+
+static void fill_screen(uint8_t r, uint8_t g, uint8_t b)
+{
+    for (int y = 0; y < SCREEN_HEIGHT; y++)
+        for (int x = 0; x < SCREEN_WIDTH; x++)
+            draw_pixel(x, y, r, g, b);
+}
+
+static void draw_rect(int x, int y, int w, int h,
+                      uint8_t r, uint8_t g, uint8_t b)
+{
+    for (int dy = 0; dy < h; dy++)
+        for (int dx = 0; dx < w; dx++)
+            draw_pixel(x + dx, y + dy, r, g, b);
+}
+
+static const uint8_t digit_segments[10] = {
+    0b1111110, 0b0110000, 0b1101101, 0b1111001, 0b0110011,
+    0b1011011, 0b1011111, 0b1110000, 0b1111111, 0b1111011
+};
+
+static void draw_digit(int x, int y, int d, uint8_t r, uint8_t g, uint8_t b)
+{
+    int seg = digit_segments[d % 10];
+    if (seg & 0x40) draw_rect(x+10, y, 40, 8, r,g,b);
+    if (seg & 0x20) draw_rect(x+50, y+10, 8, 40, r,g,b);
+    if (seg & 0x10) draw_rect(x+50, y+60, 8, 40, r,g,b);
+    if (seg & 0x08) draw_rect(x+10, y+100, 40, 8, r,g,b);
+    if (seg & 0x04) draw_rect(x, y+60, 8, 40, r,g,b);
+    if (seg & 0x02) draw_rect(x, y+10, 8, 40, r,g,b);
+    if (seg & 0x01) draw_rect(x+10, y+50, 40, 8, r,g,b);
+}
+
+static void draw_paddle(int x, int y, uint8_t r, uint8_t g, uint8_t b)
+{
+    draw_rect(x, y, PADDLE_WIDTH, PADDLE_HEIGHT, r, g, b);
+}
+
+static void draw_ball(void)
+{
+    draw_rect(ball_x, ball_y, BALL_SIZE, BALL_SIZE, 255, 255, 255);
+}
+
+/* ===== Render task ===== */
+void render_task(void *arg)
+{
+    (void)arg;
+
+    /* VDMA init: frame done interrupt inschakelen moet al in main/init code */
+
+    while (1)
+    {
+        /* ===== Tekenen in draw buffer ===== */
+        if (game_over) {
+            if (winner == 1)
+                fill_screen(0, 0, 255);
+            else if (winner == 2)
+                fill_screen(255, 0, 0);
+        } else {
+            clear_screen();
+            draw_paddle(50, paddle1_y, 0, 0, 255);
+            draw_paddle(SCREEN_WIDTH - 50 - PADDLE_WIDTH, paddle2_y, 255, 0, 0);
+            if (player1_connected && player2_connected)
+                draw_ball();
+            draw_digit(SCREEN_WIDTH/2 - 100, 50, score1, 0, 0, 255);
+            draw_digit(SCREEN_WIDTH/2 + 50, 50, score2, 255, 0, 0);
+        }
+
+        /* Flush CPU cache voor draw buffer */
+        Xil_DCacheFlushRange((UINTPTR)framebuffers[draw_buf],
+                             SCREEN_WIDTH * SCREEN_HEIGHT * BYTES_PER_PIXEL);
+
+        /* ===== Wacht tot VDMA klaar is met uitlezen ===== */
+        while (!frame_done) vTaskDelay(1);
+        frame_done = 0;
+
+        /* Swap buffer en update VDMA base address */
+        display_buf = draw_buf;
+        draw_buf = (draw_buf + 1) % NUM_BUFFERS;
+        Xil_Out32(XPAR_AXI_VDMA_0_BASEADDR + 0x5C, (UINTPTR)framebuffers[display_buf]);
+    }
+}

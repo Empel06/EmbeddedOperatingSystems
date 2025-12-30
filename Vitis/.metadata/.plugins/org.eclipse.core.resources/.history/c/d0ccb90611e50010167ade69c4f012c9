@@ -1,0 +1,144 @@
+#include "game_state.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "xil_io.h"
+#include "xil_cache.h"
+#include <string.h>
+
+#define FRAME_BUFFER_1 0x10000000
+#define BYTES_PER_PIXEL 3
+
+static uint8_t *framebuffers[2] = {
+    (uint8_t *)FRAME_BUFFER_1,
+    (uint8_t *)FRAME_BUFFER_2
+};
+
+static int draw_buf = 0;
+
+/* Pixel tekenen */
+static inline void draw_pixel(int x, int y, uint8_t r, uint8_t g, uint8_t b)
+{
+    uint32_t offset = (y * SCREEN_WIDTH + x) * BYTES_PER_PIXEL;
+    framebuffers[draw_buf][offset + 0] = r;
+    framebuffers[draw_buf][offset + 1] = g;
+    framebuffers[draw_buf][offset + 2] = b;
+}
+
+static void clear_screen(void)
+{
+    memset(framebuffers[draw_buf], 0x00,
+           SCREEN_WIDTH * SCREEN_HEIGHT * BYTES_PER_PIXEL);
+}
+
+static void fill_screen(uint8_t r, uint8_t g, uint8_t b)
+{
+    for (int y = 0; y < SCREEN_HEIGHT; y++) {
+        for (int x = 0; x < SCREEN_WIDTH; x++) {
+            draw_pixel(x, y, r, g, b);
+        }
+    }
+}
+
+static void draw_rect(int x, int y, int w, int h,
+                      uint8_t r, uint8_t g, uint8_t b)
+{
+    for (int dy = 0; dy < h; dy++)
+        for (int dx = 0; dx < w; dx++)
+            draw_pixel(x + dx, y + dy, r, g, b);
+}
+
+static const uint8_t digit_segments[10] = {
+    0b1111110, // 0
+    0b0110000, // 1
+    0b1101101, // 2
+    0b1111001, // 3
+    0b0110011, // 4
+    0b1011011, // 5
+    0b1011111, // 6
+    0b1110000, // 7
+    0b1111111, // 8
+    0b1111011  // 9
+};
+
+static void draw_digit(int x, int y, int d,
+                       uint8_t r, uint8_t g, uint8_t b)
+{
+    int seg = digit_segments[d % 10];
+
+    if (seg & 0x40) draw_rect(x+10, y, 40, 8, r,g,b);     // A
+    if (seg & 0x20) draw_rect(x+50, y+10, 8, 40, r,g,b); // B
+    if (seg & 0x10) draw_rect(x+50, y+60, 8, 40, r,g,b); // C
+    if (seg & 0x08) draw_rect(x+10, y+100, 40, 8, r,g,b);// D
+    if (seg & 0x04) draw_rect(x, y+60, 8, 40, r,g,b);    // E
+    if (seg & 0x02) draw_rect(x, y+10, 8, 40, r,g,b);    // F
+    if (seg & 0x01) draw_rect(x+10, y+50, 40, 8, r,g,b); // G
+}
+
+static void draw_paddle(int x, int y, uint8_t r, uint8_t g, uint8_t b)
+{
+    for (int dy = 0; dy < PADDLE_HEIGHT; dy++) {
+        for (int dx = 0; dx < PADDLE_WIDTH; dx++) {
+            draw_pixel(x + dx, y + dy, r, g, b);
+        }
+    }
+}
+
+static void draw_ball(void)
+{
+    for (int y = 0; y < BALL_SIZE; y++) {
+        for (int x = 0; x < BALL_SIZE; x++) {
+            draw_pixel(ball_x + x, ball_y + y, 255, 255, 255);
+        }
+    }
+}
+
+
+void render_task(void *arg)
+{
+    (void)arg;
+
+    while (1) {
+
+        if (game_over) {
+
+            /* Volledig winscherm */
+            if (winner == 1) {
+                fill_screen(0, 0, 255);   // speler 1 wint
+            }
+            else if (winner == 2) {
+                fill_screen(255, 0, 0);  // speler 2 wint
+            }
+
+        } else {
+
+            clear_screen();
+
+            draw_paddle(50, paddle1_y, 0, 0, 255);
+            draw_paddle(SCREEN_WIDTH - 50 - PADDLE_WIDTH,
+                        paddle2_y,
+                        255, 0, 0);
+
+            if (player1_connected && player2_connected) {
+                draw_ball();
+            }
+
+            draw_digit(SCREEN_WIDTH/2 - 100, 50, score1, 0, 0, 255);
+            draw_digit(SCREEN_WIDTH/2 + 50,  50, score2, 255, 0, 0);
+        }
+
+        /* Cache flush voor huidige draw buffer */
+        Xil_DCacheFlushRange(
+            (UINTPTR)framebuffers[draw_buf],
+            SCREEN_WIDTH * SCREEN_HEIGHT * BYTES_PER_PIXEL
+        );
+
+        /* Wissel draw buffer */
+        draw_buf ^= 1;
+
+        /* Update VDMA met nieuwe buffer */
+        Xil_Out32(XPAR_AXI_VDMA_0_BASEADDR + 0x5C,
+                  (UINTPTR)framebuffers[draw_buf]);
+
+        vTaskDelay(pdMS_TO_TICKS(16));
+    }
+}

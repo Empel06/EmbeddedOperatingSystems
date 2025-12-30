@@ -17,6 +17,10 @@
 #define BALL_SPEED_X   2
 #define BALL_SPEED_Y   2
 
+/* Scores */
+extern volatile int score1;
+extern volatile int score2;
+
 /* Paddle posities */
 extern volatile int paddle1_y;
 extern volatile int paddle2_y;
@@ -33,5 +37,12 @@ extern volatile int player2_connected;
 
 void game_state_init(void);
 void game_task(void *arg);
+
+#define WIN_SCORE 10
+
+extern volatile int game_over;
+extern volatile int winner;   // 1 = speler 1, 2 = speler 2
+
+void game_reset(void);
 
 #endif

@@ -1,35 +1,15 @@
 Nothing to build in platform 'hdmi_vdma'
 
-18:36:14 **** Incremental Build of configuration Debug for project Pong ****
+01:05:43 **** Incremental Build of configuration Debug for project Pong ****
 make all 
 make --no-print-directory pre-build
 a9-linaro-pre-build-step
 ' '
 make --no-print-directory main-build
-'Building file: ../src/game_state.c'
-'Invoking: ARM v7 gcc compiler'
-arm-none-eabi-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/game_state.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -IC:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/sw/hdmi_vdma/freertos10_xilinx_ps7_cortexa9_0/bspinclude/include -MMD -MP -MF"src/game_state.d" -MT"src/game_state.o" -o "src/game_state.o" "../src/game_state.c"
-'Finished building: ../src/game_state.c'
-' '
-'Building file: ../src/game_task.c'
-'Invoking: ARM v7 gcc compiler'
-arm-none-eabi-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/game_task.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -IC:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/sw/hdmi_vdma/freertos10_xilinx_ps7_cortexa9_0/bspinclude/include -MMD -MP -MF"src/game_task.d" -MT"src/game_task.o" -o "src/game_task.o" "../src/game_task.c"
-'Finished building: ../src/game_task.c'
-' '
-'Building file: ../src/main.c'
-'Invoking: ARM v7 gcc compiler'
-arm-none-eabi-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/main.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -IC:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/sw/hdmi_vdma/freertos10_xilinx_ps7_cortexa9_0/bspinclude/include -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.c"
-'Finished building: ../src/main.c'
-' '
 'Building file: ../src/render_task.c'
 'Invoking: ARM v7 gcc compiler'
 arm-none-eabi-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/render_task.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -IC:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/sw/hdmi_vdma/freertos10_xilinx_ps7_cortexa9_0/bspinclude/include -MMD -MP -MF"src/render_task.d" -MT"src/render_task.o" -o "src/render_task.o" "../src/render_task.c"
 'Finished building: ../src/render_task.c'
-' '
-'Building file: ../src/udp_perf_server.c'
-'Invoking: ARM v7 gcc compiler'
-arm-none-eabi-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/udp_perf_server.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -IC:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/sw/hdmi_vdma/freertos10_xilinx_ps7_cortexa9_0/bspinclude/include -MMD -MP -MF"src/udp_perf_server.d" -MT"src/udp_perf_server.o" -o "src/udp_perf_server.o" "../src/udp_perf_server.c"
-'Finished building: ../src/udp_perf_server.c'
 ' '
 'Building target: Pong.elf'
 'Invoking: ARM v7 gcc linker'
@@ -39,6 +19,6 @@ arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=non
 'Invoking: ARM v7 Print Size'
 arm-none-eabi-size Pong.elf  |tee "Pong.elf.size"
    text	   data	    bss	    dec	    hex	filename
- 190057	   3444	41023552	41217053	274ec1d	Pong.elf
+ 191921	   3452	41023552	41218925	274f36d	Pong.elf
 'Finished building: Pong.elf.size'
 ' '

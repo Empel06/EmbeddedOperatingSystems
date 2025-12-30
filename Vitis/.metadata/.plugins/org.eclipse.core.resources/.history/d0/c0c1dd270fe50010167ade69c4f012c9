@@ -1,0 +1,76 @@
+#include "game_state.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
+/* Game update rate ~60Hz */
+#define GAME_TICK_MS 16
+
+void game_task(void *arg)
+{
+    (void)arg;
+    static int win_timer_ms = 0;
+
+    while (1) {
+
+        if (game_over) {
+
+            win_timer_ms += GAME_TICK_MS;
+
+            if (win_timer_ms >= 3000) {   // 3 seconden
+                win_timer_ms = 0;
+                game_reset();
+            }
+
+            vTaskDelay(pdMS_TO_TICKS(GAME_TICK_MS));
+            continue;
+        }
+
+        /* ===== NORMALE GAME LOGIC ===== */
+
+        if (player1_connected && player2_connected) {
+
+            ball_x += ball_vx;
+            ball_y += ball_vy;
+
+            if (ball_y <= 0 || ball_y >= (SCREEN_HEIGHT - BALL_SIZE)) {
+                ball_vy = -ball_vy;
+            }
+
+            /* Paddle collisions */
+            if (ball_x <= 50 + PADDLE_WIDTH &&
+                ball_y + BALL_SIZE >= paddle1_y &&
+                ball_y <= paddle1_y + PADDLE_HEIGHT) {
+                ball_vx = -ball_vx;
+            }
+
+            if (ball_x + BALL_SIZE >= SCREEN_WIDTH - 50 - PADDLE_WIDTH &&
+                ball_y + BALL_SIZE >= paddle2_y &&
+                ball_y <= paddle2_y + PADDLE_HEIGHT) {
+                ball_vx = -ball_vx;
+            }
+
+            /* Scoren */
+            if (ball_x < 0) {
+                score2++;
+                if (score2 >= WIN_SCORE) {
+                    game_over = 1;
+                    winner = 2;
+                }
+                ball_x = (SCREEN_WIDTH - BALL_SIZE) / 2;
+                ball_y = (SCREEN_HEIGHT - BALL_SIZE) / 2;
+            }
+
+            if (ball_x > SCREEN_WIDTH) {
+                score1++;
+                if (score1 >= WIN_SCORE) {
+                    game_over = 1;
+                    winner = 1;
+                }
+                ball_x = (SCREEN_WIDTH - BALL_SIZE) / 2;
+                ball_y = (SCREEN_HEIGHT - BALL_SIZE) / 2;
+            }
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(GAME_TICK_MS));
+    }
+}

@@ -14,8 +14,39 @@ volatile int ball_vy;
 volatile int player1_connected = 0;
 volatile int player2_connected = 0;
 
+/* Scores */
+volatile int score1;
+volatile int score2;
+
+volatile int game_over;
+volatile int winner;
+
 void game_state_init(void)
 {
+    paddle1_y = (SCREEN_HEIGHT - PADDLE_HEIGHT) / 2;
+    paddle2_y = (SCREEN_HEIGHT - PADDLE_HEIGHT) / 2;
+
+    ball_x = (SCREEN_WIDTH - BALL_SIZE) / 2;
+    ball_y = (SCREEN_HEIGHT - BALL_SIZE) / 2;
+
+    ball_vx = (winner == 2) ? BALL_SPEED_X : -BALL_SPEED_X;
+    ball_vy = BALL_SPEED_Y;
+
+    score1 = 0;
+    score2 = 0;
+
+    game_over = 0;
+    winner = 0;
+}
+
+void game_reset(void)
+{
+    score1 = 0;
+    score2 = 0;
+
+    game_over = 0;
+    winner = 0;
+
     paddle1_y = (SCREEN_HEIGHT - PADDLE_HEIGHT) / 2;
     paddle2_y = (SCREEN_HEIGHT - PADDLE_HEIGHT) / 2;
 

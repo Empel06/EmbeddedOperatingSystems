@@ -1,0 +1,81 @@
+#include "game_state.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "xil_io.h"
+#include "xil_cache.h"
+#include <string.h>
+
+#define FRAME_BUFFER_1 0x10000000
+#define BYTES_PER_PIXEL 3
+
+static uint8_t *framebuffer = (uint8_t *)FRAME_BUFFER_1;
+
+/* Pixel tekenen */
+static inline void draw_pixel(int x, int y, uint8_t r, uint8_t g, uint8_t b)
+{
+    uint32_t offset = (y * SCREEN_WIDTH + x) * BYTES_PER_PIXEL;
+    framebuffer[offset + 0] = r;
+    framebuffer[offset + 1] = g;
+    framebuffer[offset + 2] = b;
+}
+
+static void clear_screen(void)
+{
+    memset(framebuffer, 0x00, SCREEN_WIDTH * SCREEN_HEIGHT * BYTES_PER_PIXEL);
+}
+
+static void draw_rect(int x, int y, int w, int h,
+                      uint8_t r, uint8_t g, uint8_t b)
+{
+    for (int dy = 0; dy < h; dy++)
+        for (int dx = 0; dx < w; dx++)
+            draw_pixel(x + dx, y + dy, r, g, b);
+}
+
+static void draw_paddle(int x, int y, uint8_t r, uint8_t g, uint8_t b)
+{
+    for (int dy = 0; dy < PADDLE_HEIGHT; dy++) {
+        for (int dx = 0; dx < PADDLE_WIDTH; dx++) {
+            draw_pixel(x + dx, y + dy, r, g, b);
+        }
+    }
+}
+
+static void draw_ball(void)
+{
+    for (int y = 0; y < BALL_SIZE; y++) {
+        for (int x = 0; x < BALL_SIZE; x++) {
+            draw_pixel(ball_x + x, ball_y + y, 255, 255, 255);
+        }
+    }
+}
+
+
+void render_task(void *arg)
+{
+    (void)arg;
+
+    while (1) {
+        clear_screen();
+
+        /* Player 1 = blauw */
+        draw_paddle(50, paddle1_y, 0, 0, 255);
+
+        /* Player 2 = rood */
+        draw_paddle(SCREEN_WIDTH - 50 - PADDLE_WIDTH,
+                    paddle2_y, 255, 0, 0);
+
+        /* Ball only if both players connected */
+        if (player1_connected && player2_connected) {
+            draw_ball();
+        }
+
+        Xil_DCacheFlushRange(
+            (UINTPTR)framebuffer,
+            SCREEN_WIDTH * SCREEN_HEIGHT * BYTES_PER_PIXEL
+        );
+
+        vTaskDelay(pdMS_TO_TICKS(16));
+    }
+}
+

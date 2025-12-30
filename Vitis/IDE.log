@@ -1353,3 +1353,663 @@ con
 ----------------End of Script----------------
 
 18:36:33 INFO  : Launch script is exported to file 'C:\Users\12302093\AppData\Roaming\Xilinx\Vivado\myproj\Vitis4\Pong_system\_ide\scripts\debugger_pong-default_2.tcl'
+23:46:04 INFO  : Build configuration of 'Pong_system' is updated to 'Debug'
+23:46:04 INFO  : Build configuration of system project is automatically updated to 'Debug'.
+23:46:04 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+23:46:16 INFO  : Build configuration of 'Pong_system' is updated to 'Release'
+23:46:16 INFO  : Build configuration of system project is automatically updated to 'Release'.
+23:46:16 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+23:46:34 INFO  : Disconnected from the channel tcfchan#3.
+23:46:36 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+23:46:45 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+----------------End of Script----------------
+
+23:46:45 ERROR : Could not find ARM device on the board for connection 'Local'.
+Check if the target is in:
+1. Split JTAG - No operations are possible with ARM DAP.
+2. Non JTAG bootmode - Bootrom may need time to enable DAP.
+Please try again.
+
+
+Troubleshooting hints:
+1. Check whether board is connected to system properly.
+2. In case of zynq board, check whether Digilent/Xilinx cable switch settings are correct.
+3. If you are using Xilinx Platform Cable USB, ensure that status LED is green.
+23:46:55 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+23:46:55 INFO  : Jtag cable 'Xilinx HW-FTDI-TEST FT2232H 1234-tulA' is selected.
+23:46:55 INFO  : 'jtag frequency' command is executed.
+23:46:55 INFO  : Context for 'APU' is selected.
+23:46:55 INFO  : System reset is completed.
+23:46:58 INFO  : 'after 3000' command is executed.
+23:46:58 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}' command is executed.
+23:47:01 INFO  : Device configured successfully with "C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit"
+23:47:01 INFO  : Context for 'APU' is selected.
+23:47:06 INFO  : Hardware design and registers information is loaded from 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa'.
+23:47:06 INFO  : 'configparams force-mem-access 1' command is executed.
+23:47:06 INFO  : Context for 'APU' is selected.
+23:47:06 INFO  : Sourcing of 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl' is done.
+23:47:07 INFO  : 'ps7_init' command is executed.
+23:47:07 INFO  : 'ps7_post_config' command is executed.
+23:47:07 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+23:47:07 INFO  : The application 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf' is downloaded to processor 'ps7_cortexa9_0'.
+23:47:07 INFO  : 'configparams force-mem-access 0' command is executed.
+23:47:07 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}
+fpga -file C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa -mem-ranges [list {0x40000000 0xbfffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+source C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl
+ps7_init
+ps7_post_config
+targets -set -nocase -filter {name =~ "*A9*#0"}
+dow C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+23:47:08 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+23:47:08 INFO  : 'con' command is executed.
+23:47:08 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A9*#0"}
+con
+----------------End of Script----------------
+
+23:47:08 INFO  : Launch script is exported to file 'C:\Users\12302093\AppData\Roaming\Xilinx\Vivado\myproj\Vitis4\Pong_system\_ide\scripts\debugger_pong-default_2.tcl'
+23:50:48 INFO  : Disconnected from the channel tcfchan#4.
+23:52:41 INFO  : Build configuration of 'Pong_system' is updated to 'Debug'
+23:52:41 INFO  : Build configuration of system project is automatically updated to 'Debug'.
+23:52:41 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+23:52:52 INFO  : Build configuration of 'Pong_system' is updated to 'Release'
+23:52:52 INFO  : Build configuration of system project is automatically updated to 'Release'.
+23:52:52 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+23:53:04 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+23:53:04 INFO  : Jtag cable 'Xilinx HW-FTDI-TEST FT2232H 1234-tulA' is selected.
+23:53:04 INFO  : 'jtag frequency' command is executed.
+23:53:04 INFO  : Context for 'APU' is selected.
+23:53:04 INFO  : System reset is completed.
+23:53:07 INFO  : 'after 3000' command is executed.
+23:53:07 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}' command is executed.
+23:53:10 INFO  : Device configured successfully with "C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit"
+23:53:10 INFO  : Context for 'APU' is selected.
+23:53:10 INFO  : Hardware design and registers information is loaded from 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa'.
+23:53:10 INFO  : 'configparams force-mem-access 1' command is executed.
+23:53:10 INFO  : Context for 'APU' is selected.
+23:53:10 INFO  : Sourcing of 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl' is done.
+23:53:10 INFO  : 'ps7_init' command is executed.
+23:53:10 INFO  : 'ps7_post_config' command is executed.
+23:53:10 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+23:53:11 INFO  : The application 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf' is downloaded to processor 'ps7_cortexa9_0'.
+23:53:11 INFO  : 'configparams force-mem-access 0' command is executed.
+23:53:11 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}
+fpga -file C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa -mem-ranges [list {0x40000000 0xbfffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+source C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl
+ps7_init
+ps7_post_config
+targets -set -nocase -filter {name =~ "*A9*#0"}
+dow C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+23:53:11 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+23:53:12 INFO  : 'con' command is executed.
+23:53:12 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A9*#0"}
+con
+----------------End of Script----------------
+
+23:53:12 INFO  : Launch script is exported to file 'C:\Users\12302093\AppData\Roaming\Xilinx\Vivado\myproj\Vitis4\Pong_system\_ide\scripts\debugger_pong-default_2.tcl'
+00:03:33 INFO  : Build configuration of 'Pong_system' is updated to 'Debug'
+00:03:33 INFO  : Build configuration of system project is automatically updated to 'Debug'.
+00:03:34 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:03:40 INFO  : Build configuration of 'Pong_system' is updated to 'Release'
+00:03:40 INFO  : Build configuration of system project is automatically updated to 'Release'.
+00:03:40 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:04:03 INFO  : Disconnected from the channel tcfchan#5.
+00:04:04 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+00:04:13 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+----------------End of Script----------------
+
+00:04:13 ERROR : Could not find ARM device on the board for connection 'Local'.
+Check if the target is in:
+1. Split JTAG - No operations are possible with ARM DAP.
+2. Non JTAG bootmode - Bootrom may need time to enable DAP.
+Please try again.
+
+
+Troubleshooting hints:
+1. Check whether board is connected to system properly.
+2. In case of zynq board, check whether Digilent/Xilinx cable switch settings are correct.
+3. If you are using Xilinx Platform Cable USB, ensure that status LED is green.
+00:04:20 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+00:04:20 INFO  : Jtag cable 'Xilinx HW-FTDI-TEST FT2232H 1234-tulA' is selected.
+00:04:21 INFO  : 'jtag frequency' command is executed.
+00:04:21 INFO  : Context for 'APU' is selected.
+00:04:21 INFO  : System reset is completed.
+00:04:24 INFO  : 'after 3000' command is executed.
+00:04:24 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}' command is executed.
+00:04:26 INFO  : Device configured successfully with "C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit"
+00:04:26 INFO  : Context for 'APU' is selected.
+00:04:30 INFO  : Hardware design and registers information is loaded from 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa'.
+00:04:30 INFO  : 'configparams force-mem-access 1' command is executed.
+00:04:30 INFO  : Context for 'APU' is selected.
+00:04:30 INFO  : Sourcing of 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl' is done.
+00:04:31 INFO  : 'ps7_init' command is executed.
+00:04:31 INFO  : 'ps7_post_config' command is executed.
+00:04:31 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+00:04:31 INFO  : The application 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf' is downloaded to processor 'ps7_cortexa9_0'.
+00:04:31 INFO  : 'configparams force-mem-access 0' command is executed.
+00:04:31 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}
+fpga -file C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa -mem-ranges [list {0x40000000 0xbfffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+source C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl
+ps7_init
+ps7_post_config
+targets -set -nocase -filter {name =~ "*A9*#0"}
+dow C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+00:04:32 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+00:04:32 INFO  : 'con' command is executed.
+00:04:32 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A9*#0"}
+con
+----------------End of Script----------------
+
+00:04:32 INFO  : Launch script is exported to file 'C:\Users\12302093\AppData\Roaming\Xilinx\Vivado\myproj\Vitis4\Pong_system\_ide\scripts\debugger_pong-default_2.tcl'
+00:14:51 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:14:57 INFO  : Build configuration of 'Pong_system' is updated to 'Debug'
+00:14:57 INFO  : Build configuration of system project is automatically updated to 'Debug'.
+00:14:57 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:15:04 INFO  : Build configuration of 'Pong_system' is updated to 'Release'
+00:15:04 INFO  : Build configuration of system project is automatically updated to 'Release'.
+00:15:06 INFO  : Disconnected from the channel tcfchan#6.
+00:15:07 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+00:15:07 INFO  : Jtag cable 'Xilinx HW-FTDI-TEST FT2232H 1234-tulA' is selected.
+00:15:07 INFO  : 'jtag frequency' command is executed.
+00:15:08 INFO  : Context for 'APU' is selected.
+00:15:08 INFO  : System reset is completed.
+00:15:11 INFO  : 'after 3000' command is executed.
+00:15:11 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}' command is executed.
+00:15:13 INFO  : Device configured successfully with "C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit"
+00:15:13 INFO  : Context for 'APU' is selected.
+00:15:17 INFO  : Hardware design and registers information is loaded from 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa'.
+00:15:17 INFO  : 'configparams force-mem-access 1' command is executed.
+00:15:17 INFO  : Context for 'APU' is selected.
+00:15:17 INFO  : Sourcing of 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl' is done.
+00:15:18 INFO  : 'ps7_init' command is executed.
+00:15:18 INFO  : 'ps7_post_config' command is executed.
+00:15:18 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+00:15:18 INFO  : The application 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf' is downloaded to processor 'ps7_cortexa9_0'.
+00:15:18 INFO  : 'configparams force-mem-access 0' command is executed.
+00:15:18 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}
+fpga -file C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa -mem-ranges [list {0x40000000 0xbfffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+source C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl
+ps7_init
+ps7_post_config
+targets -set -nocase -filter {name =~ "*A9*#0"}
+dow C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+00:15:18 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+00:15:18 INFO  : 'con' command is executed.
+00:15:18 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A9*#0"}
+con
+----------------End of Script----------------
+
+00:15:18 INFO  : Launch script is exported to file 'C:\Users\12302093\AppData\Roaming\Xilinx\Vivado\myproj\Vitis4\Pong_system\_ide\scripts\debugger_pong-default_2.tcl'
+00:24:35 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:24:41 INFO  : Build configuration of 'Pong_system' is updated to 'Debug'
+00:24:41 INFO  : Build configuration of system project is automatically updated to 'Debug'.
+00:24:41 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:24:47 INFO  : Build configuration of 'Pong_system' is updated to 'Release'
+00:24:47 INFO  : Build configuration of system project is automatically updated to 'Release'.
+00:24:50 INFO  : Disconnected from the channel tcfchan#7.
+00:24:51 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+00:25:00 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+----------------End of Script----------------
+
+00:25:00 ERROR : Could not find ARM device on the board for connection 'Local'.
+Check if the target is in:
+1. Split JTAG - No operations are possible with ARM DAP.
+2. Non JTAG bootmode - Bootrom may need time to enable DAP.
+Please try again.
+
+
+Troubleshooting hints:
+1. Check whether board is connected to system properly.
+2. In case of zynq board, check whether Digilent/Xilinx cable switch settings are correct.
+3. If you are using Xilinx Platform Cable USB, ensure that status LED is green.
+00:25:06 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+00:25:07 INFO  : Jtag cable 'Xilinx HW-FTDI-TEST FT2232H 1234-tulA' is selected.
+00:25:07 INFO  : 'jtag frequency' command is executed.
+00:25:07 INFO  : Context for 'APU' is selected.
+00:25:07 INFO  : System reset is completed.
+00:25:10 INFO  : 'after 3000' command is executed.
+00:25:10 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}' command is executed.
+00:25:12 INFO  : Device configured successfully with "C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit"
+00:25:12 INFO  : Context for 'APU' is selected.
+00:25:16 INFO  : Hardware design and registers information is loaded from 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa'.
+00:25:16 INFO  : 'configparams force-mem-access 1' command is executed.
+00:25:16 INFO  : Context for 'APU' is selected.
+00:25:16 INFO  : Sourcing of 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl' is done.
+00:25:16 INFO  : 'ps7_init' command is executed.
+00:25:16 INFO  : 'ps7_post_config' command is executed.
+00:25:16 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+00:25:17 INFO  : The application 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf' is downloaded to processor 'ps7_cortexa9_0'.
+00:25:17 INFO  : 'configparams force-mem-access 0' command is executed.
+00:25:17 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}
+fpga -file C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa -mem-ranges [list {0x40000000 0xbfffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+source C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl
+ps7_init
+ps7_post_config
+targets -set -nocase -filter {name =~ "*A9*#0"}
+dow C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+00:25:17 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+00:25:17 INFO  : 'con' command is executed.
+00:25:17 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A9*#0"}
+con
+----------------End of Script----------------
+
+00:25:17 INFO  : Launch script is exported to file 'C:\Users\12302093\AppData\Roaming\Xilinx\Vivado\myproj\Vitis4\Pong_system\_ide\scripts\debugger_pong-default_2.tcl'
+00:36:15 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:36:20 INFO  : Build configuration of 'Pong_system' is updated to 'Debug'
+00:36:20 INFO  : Build configuration of system project is automatically updated to 'Debug'.
+00:36:20 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:36:31 INFO  : Build configuration of 'Pong_system' is updated to 'Release'
+00:36:31 INFO  : Build configuration of system project is automatically updated to 'Release'.
+00:36:33 INFO  : Disconnected from the channel tcfchan#8.
+00:36:34 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+00:36:35 INFO  : Jtag cable 'Xilinx HW-FTDI-TEST FT2232H 1234-tulA' is selected.
+00:36:35 INFO  : 'jtag frequency' command is executed.
+00:36:35 INFO  : Context for 'APU' is selected.
+00:36:35 INFO  : System reset is completed.
+00:36:38 INFO  : 'after 3000' command is executed.
+00:36:38 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}' command is executed.
+00:36:40 INFO  : Device configured successfully with "C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit"
+00:36:40 INFO  : Context for 'APU' is selected.
+00:36:44 INFO  : Hardware design and registers information is loaded from 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa'.
+00:36:44 INFO  : 'configparams force-mem-access 1' command is executed.
+00:36:44 INFO  : Context for 'APU' is selected.
+00:36:44 INFO  : Sourcing of 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl' is done.
+00:36:45 INFO  : 'ps7_init' command is executed.
+00:36:45 INFO  : 'ps7_post_config' command is executed.
+00:36:45 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+00:36:45 INFO  : The application 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf' is downloaded to processor 'ps7_cortexa9_0'.
+00:36:45 INFO  : 'configparams force-mem-access 0' command is executed.
+00:36:45 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}
+fpga -file C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa -mem-ranges [list {0x40000000 0xbfffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+source C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl
+ps7_init
+ps7_post_config
+targets -set -nocase -filter {name =~ "*A9*#0"}
+dow C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+00:36:46 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+00:36:46 INFO  : 'con' command is executed.
+00:36:46 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A9*#0"}
+con
+----------------End of Script----------------
+
+00:36:46 INFO  : Launch script is exported to file 'C:\Users\12302093\AppData\Roaming\Xilinx\Vivado\myproj\Vitis4\Pong_system\_ide\scripts\debugger_pong-default_2.tcl'
+00:48:37 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:48:43 INFO  : Build configuration of 'Pong_system' is updated to 'Debug'
+00:48:43 INFO  : Build configuration of system project is automatically updated to 'Debug'.
+00:48:43 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:48:49 INFO  : Build configuration of 'Pong_system' is updated to 'Release'
+00:48:49 INFO  : Build configuration of system project is automatically updated to 'Release'.
+00:48:51 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:49:45 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:49:50 INFO  : Build configuration of 'Pong_system' is updated to 'Debug'
+00:49:50 INFO  : Build configuration of system project is automatically updated to 'Debug'.
+00:49:51 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:49:59 INFO  : Build configuration of 'Pong_system' is updated to 'Release'
+00:49:59 INFO  : Build configuration of system project is automatically updated to 'Release'.
+00:49:59 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:50:07 INFO  : Disconnected from the channel tcfchan#9.
+00:50:08 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+00:50:08 INFO  : Jtag cable 'Xilinx HW-FTDI-TEST FT2232H 1234-tulA' is selected.
+00:50:08 INFO  : 'jtag frequency' command is executed.
+00:50:08 INFO  : Context for 'APU' is selected.
+00:50:08 INFO  : System reset is completed.
+00:50:11 INFO  : 'after 3000' command is executed.
+00:50:11 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}' command is executed.
+00:50:14 INFO  : Device configured successfully with "C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit"
+00:50:14 INFO  : Context for 'APU' is selected.
+00:50:18 INFO  : Hardware design and registers information is loaded from 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa'.
+00:50:18 INFO  : 'configparams force-mem-access 1' command is executed.
+00:50:18 INFO  : Context for 'APU' is selected.
+00:50:18 INFO  : Sourcing of 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl' is done.
+00:50:18 INFO  : 'ps7_init' command is executed.
+00:50:18 INFO  : 'ps7_post_config' command is executed.
+00:50:18 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+00:50:19 INFO  : The application 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf' is downloaded to processor 'ps7_cortexa9_0'.
+00:50:19 INFO  : 'configparams force-mem-access 0' command is executed.
+00:50:19 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}
+fpga -file C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa -mem-ranges [list {0x40000000 0xbfffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+source C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl
+ps7_init
+ps7_post_config
+targets -set -nocase -filter {name =~ "*A9*#0"}
+dow C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+00:50:19 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+00:50:20 INFO  : 'con' command is executed.
+00:50:20 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A9*#0"}
+con
+----------------End of Script----------------
+
+00:50:20 INFO  : Launch script is exported to file 'C:\Users\12302093\AppData\Roaming\Xilinx\Vivado\myproj\Vitis4\Pong_system\_ide\scripts\debugger_pong-default_2.tcl'
+00:52:51 INFO  : Build configuration of 'Pong_system' is updated to 'Debug'
+00:52:51 INFO  : Build configuration of system project is automatically updated to 'Debug'.
+00:52:52 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:52:56 INFO  : Build configuration of 'Pong_system' is updated to 'Release'
+00:52:56 INFO  : Build configuration of system project is automatically updated to 'Release'.
+00:52:56 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+00:53:03 INFO  : Disconnected from the channel tcfchan#10.
+00:53:04 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+00:53:06 INFO  : Jtag cable 'Xilinx HW-FTDI-TEST FT2232H 1234-tulA' is selected.
+00:53:06 INFO  : 'jtag frequency' command is executed.
+00:53:06 INFO  : Context for 'APU' is selected.
+00:53:06 INFO  : System reset is completed.
+00:53:09 INFO  : 'after 3000' command is executed.
+00:53:09 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}' command is executed.
+00:53:12 INFO  : Device configured successfully with "C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit"
+00:53:12 INFO  : Context for 'APU' is selected.
+00:53:16 INFO  : Hardware design and registers information is loaded from 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa'.
+00:53:16 INFO  : 'configparams force-mem-access 1' command is executed.
+00:53:16 INFO  : Context for 'APU' is selected.
+00:53:16 INFO  : Sourcing of 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl' is done.
+00:53:16 INFO  : 'ps7_init' command is executed.
+00:53:16 INFO  : 'ps7_post_config' command is executed.
+00:53:17 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+00:53:17 INFO  : The application 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf' is downloaded to processor 'ps7_cortexa9_0'.
+00:53:17 INFO  : 'configparams force-mem-access 0' command is executed.
+00:53:17 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}
+fpga -file C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa -mem-ranges [list {0x40000000 0xbfffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+source C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl
+ps7_init
+ps7_post_config
+targets -set -nocase -filter {name =~ "*A9*#0"}
+dow C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+00:53:18 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+00:53:18 INFO  : 'con' command is executed.
+00:53:18 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A9*#0"}
+con
+----------------End of Script----------------
+
+00:53:18 INFO  : Launch script is exported to file 'C:\Users\12302093\AppData\Roaming\Xilinx\Vivado\myproj\Vitis4\Pong_system\_ide\scripts\debugger_pong-default_2.tcl'
+01:00:56 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+01:01:00 INFO  : Build configuration of 'Pong_system' is updated to 'Debug'
+01:01:00 INFO  : Build configuration of system project is automatically updated to 'Debug'.
+01:01:00 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+01:01:07 INFO  : Build configuration of 'Pong_system' is updated to 'Release'
+01:01:07 INFO  : Build configuration of system project is automatically updated to 'Release'.
+01:01:09 INFO  : Disconnected from the channel tcfchan#11.
+01:01:10 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+01:01:12 INFO  : Jtag cable 'Xilinx HW-FTDI-TEST FT2232H 1234-tulA' is selected.
+01:01:12 INFO  : 'jtag frequency' command is executed.
+01:01:12 INFO  : Context for 'APU' is selected.
+01:01:12 INFO  : System reset is completed.
+01:01:15 INFO  : 'after 3000' command is executed.
+01:01:15 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}' command is executed.
+01:01:17 INFO  : Device configured successfully with "C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit"
+01:01:17 INFO  : Context for 'APU' is selected.
+01:01:21 INFO  : Hardware design and registers information is loaded from 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa'.
+01:01:21 INFO  : 'configparams force-mem-access 1' command is executed.
+01:01:21 INFO  : Context for 'APU' is selected.
+01:01:21 INFO  : Sourcing of 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl' is done.
+01:01:22 INFO  : 'ps7_init' command is executed.
+01:01:22 INFO  : 'ps7_post_config' command is executed.
+01:01:22 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+01:01:23 INFO  : The application 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf' is downloaded to processor 'ps7_cortexa9_0'.
+01:01:23 INFO  : 'configparams force-mem-access 0' command is executed.
+01:01:23 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}
+fpga -file C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa -mem-ranges [list {0x40000000 0xbfffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+source C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl
+ps7_init
+ps7_post_config
+targets -set -nocase -filter {name =~ "*A9*#0"}
+dow C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+01:01:23 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+01:01:23 INFO  : 'con' command is executed.
+01:01:23 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A9*#0"}
+con
+----------------End of Script----------------
+
+01:01:23 INFO  : Launch script is exported to file 'C:\Users\12302093\AppData\Roaming\Xilinx\Vivado\myproj\Vitis4\Pong_system\_ide\scripts\debugger_pong-default_2.tcl'
+01:03:54 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+01:04:01 INFO  : Build configuration of 'Pong_system' is updated to 'Debug'
+01:04:01 INFO  : Build configuration of system project is automatically updated to 'Debug'.
+01:04:01 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+01:04:04 INFO  : Build configuration of 'Pong_system' is updated to 'Release'
+01:04:04 INFO  : Build configuration of system project is automatically updated to 'Release'.
+01:04:08 INFO  : Disconnected from the channel tcfchan#12.
+01:04:09 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+01:04:18 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+----------------End of Script----------------
+
+01:04:18 ERROR : Could not find ARM device on the board for connection 'Local'.
+Check if the target is in:
+1. Split JTAG - No operations are possible with ARM DAP.
+2. Non JTAG bootmode - Bootrom may need time to enable DAP.
+Please try again.
+
+
+Troubleshooting hints:
+1. Check whether board is connected to system properly.
+2. In case of zynq board, check whether Digilent/Xilinx cable switch settings are correct.
+3. If you are using Xilinx Platform Cable USB, ensure that status LED is green.
+01:04:25 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+01:04:25 INFO  : Jtag cable 'Xilinx HW-FTDI-TEST FT2232H 1234-tulA' is selected.
+01:04:25 INFO  : 'jtag frequency' command is executed.
+01:04:25 INFO  : Context for 'APU' is selected.
+01:04:25 INFO  : System reset is completed.
+01:04:28 INFO  : 'after 3000' command is executed.
+01:04:28 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}' command is executed.
+01:04:30 INFO  : Device configured successfully with "C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit"
+01:04:30 INFO  : Context for 'APU' is selected.
+01:04:34 INFO  : Hardware design and registers information is loaded from 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa'.
+01:04:34 INFO  : 'configparams force-mem-access 1' command is executed.
+01:04:34 INFO  : Context for 'APU' is selected.
+01:04:34 INFO  : Sourcing of 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl' is done.
+01:04:35 INFO  : 'ps7_init' command is executed.
+01:04:35 INFO  : 'ps7_post_config' command is executed.
+01:04:35 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+01:04:35 INFO  : The application 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf' is downloaded to processor 'ps7_cortexa9_0'.
+01:04:35 INFO  : 'configparams force-mem-access 0' command is executed.
+01:04:35 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}
+fpga -file C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa -mem-ranges [list {0x40000000 0xbfffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+source C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl
+ps7_init
+ps7_post_config
+targets -set -nocase -filter {name =~ "*A9*#0"}
+dow C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+01:04:35 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+01:04:36 INFO  : 'con' command is executed.
+01:04:36 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A9*#0"}
+con
+----------------End of Script----------------
+
+01:04:36 INFO  : Launch script is exported to file 'C:\Users\12302093\AppData\Roaming\Xilinx\Vivado\myproj\Vitis4\Pong_system\_ide\scripts\debugger_pong-default_2.tcl'
+01:05:39 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+01:05:43 INFO  : Build configuration of 'Pong_system' is updated to 'Debug'
+01:05:43 INFO  : Build configuration of system project is automatically updated to 'Debug'.
+01:05:43 INFO  : Checking for BSP changes to sync application flags for project 'Pong'...
+01:05:52 INFO  : Build configuration of 'Pong_system' is updated to 'Release'
+01:05:52 INFO  : Build configuration of system project is automatically updated to 'Release'.
+01:05:53 INFO  : Disconnected from the channel tcfchan#13.
+01:05:54 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+01:06:03 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+----------------End of Script----------------
+
+01:06:03 ERROR : Could not find ARM device on the board for connection 'Local'.
+Check if the target is in:
+1. Split JTAG - No operations are possible with ARM DAP.
+2. Non JTAG bootmode - Bootrom may need time to enable DAP.
+Please try again.
+
+
+Troubleshooting hints:
+1. Check whether board is connected to system properly.
+2. In case of zynq board, check whether Digilent/Xilinx cable switch settings are correct.
+3. If you are using Xilinx Platform Cable USB, ensure that status LED is green.
+01:06:09 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+01:06:10 INFO  : Jtag cable 'Xilinx HW-FTDI-TEST FT2232H 1234-tulA' is selected.
+01:06:10 INFO  : 'jtag frequency' command is executed.
+01:06:10 INFO  : Context for 'APU' is selected.
+01:06:10 INFO  : System reset is completed.
+01:06:13 INFO  : 'after 3000' command is executed.
+01:06:13 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}' command is executed.
+01:06:15 INFO  : Device configured successfully with "C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit"
+01:06:15 INFO  : Context for 'APU' is selected.
+01:06:19 INFO  : Hardware design and registers information is loaded from 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa'.
+01:06:19 INFO  : 'configparams force-mem-access 1' command is executed.
+01:06:19 INFO  : Context for 'APU' is selected.
+01:06:19 INFO  : Sourcing of 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl' is done.
+01:06:20 INFO  : 'ps7_init' command is executed.
+01:06:20 INFO  : 'ps7_post_config' command is executed.
+01:06:20 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+01:06:20 INFO  : The application 'C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf' is downloaded to processor 'ps7_cortexa9_0'.
+01:06:20 INFO  : 'configparams force-mem-access 0' command is executed.
+01:06:20 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-FTDI-TEST FT2232H 1234-tulA" && level==0 && jtag_device_ctx=="jsn-HW-FTDI-TEST FT2232H-1234-tulA-23727093-0"}
+fpga -file C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/bitstream/hdmi_vdma.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/hdmi_vdma/export/hdmi_vdma/hw/hdmi_vdma.xsa -mem-ranges [list {0x40000000 0xbfffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+source C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/_ide/psinit/ps7_init.tcl
+ps7_init
+ps7_post_config
+targets -set -nocase -filter {name =~ "*A9*#0"}
+dow C:/Users/12302093/AppData/Roaming/Xilinx/Vivado/myproj/Vitis4/Pong/Release/Pong.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+01:06:21 INFO  : Context for processor 'ps7_cortexa9_0' is selected.
+01:06:21 INFO  : 'con' command is executed.
+01:06:21 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A9*#0"}
+con
+----------------End of Script----------------
+
+01:06:21 INFO  : Launch script is exported to file 'C:\Users\12302093\AppData\Roaming\Xilinx\Vivado\myproj\Vitis4\Pong_system\_ide\scripts\debugger_pong-default_2.tcl'
